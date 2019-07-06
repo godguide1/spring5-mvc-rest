@@ -1,7 +1,9 @@
 package guru.springframework.spring5mvcrest.bootstrap;
 
 import guru.springframework.spring5mvcrest.domain.Category;
+import guru.springframework.spring5mvcrest.domain.Customer;
 import guru.springframework.spring5mvcrest.repositories.CategoryRepository;
+import guru.springframework.spring5mvcrest.repositories.CustomerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -12,13 +14,61 @@ import org.springframework.stereotype.Component;
 public class Bootstrap implements CommandLineRunner {
 
     private CategoryRepository categoryRepository;
+    private CustomerRepository customerRepository;
 
-    public Bootstrap(CategoryRepository categoryRepository) {
+    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
         this.categoryRepository = categoryRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        loadCategories();
+
+        loadCustomers();
+    }
+
+    private void loadCustomers() {
+        Customer david = new Customer();
+        david.setId(1L);
+        david.setFirstname("David");
+        david.setLastname("Winter");
+
+
+        Customer anne = new Customer();
+        anne.setId(2L);
+        anne.setFirstname("Anne");
+        anne.setLastname("Hine");
+
+
+        Customer liza = new Customer();
+        liza.setId(3L);
+        liza.setFirstname("Liza");
+        liza.setLastname("Eastman");
+
+
+        Customer freddy = new Customer();
+        freddy.setId(4L);
+        freddy.setFirstname("Freddy");
+        freddy.setLastname("Meyers");
+
+
+        Customer bill = new Customer();
+        bill.setId(5L);
+        bill.setFirstname("Bill");
+        bill.setLastname("Gates");
+
+
+        customerRepository.save(david);
+        customerRepository.save(anne);
+        customerRepository.save(liza);
+        customerRepository.save(freddy);
+        customerRepository.save(bill);
+
+        System.out.println("Customer Data Loaded = " + customerRepository.count() );
+    }
+
+    private void loadCategories() {
         Category fruits = new Category();
         fruits.setName("Fruits");
 
@@ -42,6 +92,5 @@ public class Bootstrap implements CommandLineRunner {
 
 
         System.out.println("Data Loaded = " + categoryRepository.count() );
-
     }
 }
