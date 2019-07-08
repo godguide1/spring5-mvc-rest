@@ -2,8 +2,10 @@ package guru.springframework.spring5mvcrest.bootstrap;
 
 import guru.springframework.spring5mvcrest.domain.Category;
 import guru.springframework.spring5mvcrest.domain.Customer;
+import guru.springframework.spring5mvcrest.domain.Vendor;
 import guru.springframework.spring5mvcrest.repositories.CategoryRepository;
 import guru.springframework.spring5mvcrest.repositories.CustomerRepository;
+import guru.springframework.spring5mvcrest.repositories.VendorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +17,12 @@ public class Bootstrap implements CommandLineRunner {
 
     private CategoryRepository categoryRepository;
     private CustomerRepository customerRepository;
+    private VendorRepository vendorRepository;
 
-    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     @Override
@@ -26,6 +30,8 @@ public class Bootstrap implements CommandLineRunner {
         loadCategories();
 
         loadCustomers();
+
+        loadVendors();
     }
 
     private void loadCustomers() {
@@ -92,5 +98,35 @@ public class Bootstrap implements CommandLineRunner {
 
 
         System.out.println("Data Loaded = " + categoryRepository.count() );
+    }
+
+    private void loadVendors() {
+
+        Vendor westernTasty = new Vendor();
+        westernTasty.setId(1L);
+        westernTasty.setName("Western Tasty Fruits Ltd.");
+        vendorRepository.save(westernTasty);
+
+        Vendor exoticFruits = new Vendor();
+        exoticFruits.setId(2L);
+        exoticFruits.setName("Exotic Fruits Company");
+        vendorRepository.save(exoticFruits);
+
+        Vendor homeFruits = new Vendor();
+        homeFruits.setId(3L);
+        homeFruits.setName("Home Fruits");
+        vendorRepository.save(homeFruits);
+
+        Vendor funFresh = new Vendor();
+        funFresh.setId(4L);
+        funFresh.setName("Fun Fresh Fruits Ltd.");
+        vendorRepository.save(funFresh);
+
+        Vendor nutsCompany = new Vendor();
+        nutsCompany.setId(5L);
+        nutsCompany.setName("Nuts for Nuts Company");
+        vendorRepository.save(nutsCompany);
+
+
     }
 }

@@ -2,6 +2,7 @@ package guru.springframework.spring5mvcrest.services;
 
 import guru.springframework.spring5mvcrest.api.v1.mapper.CustomerMapper;
 import guru.springframework.spring5mvcrest.api.v1.model.CustomerDTO;
+import guru.springframework.spring5mvcrest.controllers.v1.CustomerController;
 import guru.springframework.spring5mvcrest.domain.Customer;
 import guru.springframework.spring5mvcrest.repositories.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +28,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDTO> getAllCustomers() {
-        return customerRepository.findAll()
+        return customerRepository
+                .findAll()
                 .stream()
                 .map(customer -> {
                     CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
-                    customerDTO.setCustomerUrl("/api/v1/customers/" + customer.getId());
+                    customerDTO.setCustomerUrl(getCustomerUrl(customer.getId()));
                     return customerDTO;
                 })
                 .collect(Collectors.toList());
@@ -39,9 +41,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO getCustomerById(Long id) {
+
         return customerRepository.findById(id)
                 .map(customerMapper::customerToCustomerDTO)
-                .orElseThrow(RuntimeException::new);
+                .map(customerDTO -> {
+                    //set API URL
+                    customerDTO.setCustomerUrl(getCustomerUrl(id));
+                    return customerDTO;
+                })
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -55,7 +63,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         CustomerDTO returnDto = customerMapper.customerToCustomerDTO(savedCustomer);
 
-        returnDto.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
+        returnDto.setCustomerUrl(getCustomerUrl(savedCustomer.getId()));
 
         return returnDto;
     }
@@ -82,11 +90,15 @@ public class CustomerServiceImpl implements CustomerService {
 
             CustomerDTO returnDto = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
 
-            returnDto.setCustomerUrl("/api/v1/customers/" + id);
+            returnDto.setCustomerUrl(getCustomerUrl(id));
 
             return returnDto;
 
-        }).orElseThrow(RuntimeException::new); //todo implement better exception handling;
+        }).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private String getCustomerUrl(Long id) {
+        return CustomerController.BASE_URL + "/" + id;
     }
 
     @Override
